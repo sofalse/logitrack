@@ -1,0 +1,6 @@
+{
+  "name": "@mwisniewski/logitrack-api-gateway",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/api-gateway/src",
+  "tags": []
+}

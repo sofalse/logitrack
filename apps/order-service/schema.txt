@@ -1,0 +1,40 @@
+src/main/java/pl/mwisniewski/logitrack/orderservice/cargo
+│
+├── domain/                         <-- Serce systemu (Czysta Java, 0 Springa)
+│   ├── model/                      <-- Agregaty i Value Objects
+│   │   ├── Cargo.java              (Aggregate Root - Klasa)
+│   │   ├── CargoId.java            (Value Object - Record)
+│   │   ├── Weight.java             (Value Object - Record)
+│   │   ├── Dimensions.java         (Value Object - Record)
+│   │   └── CargoStatus.java        (Enum)
+│   ├── ports/                      <-- Czego domena wymaga od świata
+│   │   └── CargoRepository.java    (Interfejs)
+│   └── exception/                  <-- Błędy biznesowe
+│       └── CargoNotFoundException.java
+│
+├── application/                    <-- Dyrygent (Orkiestracja)
+│   ├── CargoService.java           (Używa portów, nie wie o istnieniu SQL)
+│   └── dto/                        <-- Komendy (np. RegisterCargoCommand)
+│
+└── infrastructure/                 <-- Detale implementacyjne (Tu rządzi Spring)
+    ├── persistence/                <-- Baza Danych (JPA/Hibernate)
+    │   ├── CargoEntity.java        (Encja JPA - @Entity)
+    │   ├── JpaCargoRepository.java (Spring Data Interface)
+    │   ├── SqlCargoRepository.java (Adapter - implementuje CargoRepository)
+    │   └── WeightEmbeddable.java   (JPA @Embeddable dla rekordu Weight)
+    │
+    ├── web/                        <-- API (REST)
+    │   ├── CargoController.java    (@RestController)
+    │   ├── CargoMapper.java        (MapStruct: Entity <-> Domain <-> DTO)
+    │   └── request/                <-- Co przychodzi z Frontendu
+    │       └── CreateCargoRequest.java (DTO - Record)
+    │
+    └── configuration/              <-- Beany Springowe specyficzne dla modułu
+        └── CargoConfiguration.java
+        
+---
+Bounded Context	Odpowiedzialność	Kluczowe Agregaty	Baza Danych
+Ordering	Przyjmowanie i cykl życia zleceń.	Order, Cargo	PostgreSQL
+Fleet	Rejestr pojazdów, przeglądy, statusy.	Vehicle, Driver	PostgreSQL
+Tracking	Dane GPS, geo-fencing, estymacja czasu (ETA).	Position, Route	Redis / MongoDB
+Billing	Faktury, stawki, rozliczenia kierowców.	Invoice, Tariff	PostgreSQL

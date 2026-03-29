@@ -1,0 +1,1 @@
+ALTER TABLE cargo ADD COLUMN description VARCHAR(255);
