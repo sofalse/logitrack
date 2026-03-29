@@ -1,34 +1,23 @@
-package pl.mwisniewski.logitrack.orderService.order.infrastructure.web.exceptions;
+package pl.mwisniewski.logitrack.orderService.cargo.infrastructure.web.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import pl.mwisniewski.logitrack.orderService.order.domain.exception.OrderNotFoundException;
+import pl.mwisniewski.logitrack.orderService.cargo.domain.exception.CargoNotFoundException;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class OrdersExceptionHandler {
+public class CargosExceptionHandler {
 
-    @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleOrderNotFound(OrderNotFoundException ex) {
+    @ExceptionHandler(CargoNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCargoNotFound(CargoNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("message", ex.getMessage()));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        String errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(e -> e.getField() + ": " + e.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("message", errors));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

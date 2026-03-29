@@ -1,10 +1,14 @@
 package pl.mwisniewski.logitrack.orderService.cargo.infrastructure.persistence;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import pl.mwisniewski.logitrack.orderService.cargo.domain.model.Cargo;
 import pl.mwisniewski.logitrack.orderService.cargo.domain.ports.CargoRepository;
 import pl.mwisniewski.logitrack.orderService.cargo.infrastructure.web.CargoMapper;
+import pl.mwisniewski.logitrack.orderService.common.PageResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +27,19 @@ class SqlCargoRepository implements CargoRepository {
 
     @Override
     public List<Cargo> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
+        return jpaRepository.findAll(Sort.by("updatedAt").descending()).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public PageResult<Cargo> findAll(int page, int size) {
+        Page<CargoEntity> result = jpaRepository.findAll(PageRequest.of(page, size).withSort(Sort.by("updatedAt").descending()));
+        return new PageResult<>(
+                result.getContent().stream().map(mapper::toDomain).toList(),
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages()
+        );
     }
 
     @Override

@@ -16,6 +16,9 @@ public interface CargoMapper {
 
     Cargo toDomain(CargoEntity entity);
 
+
+    @Mapping(target = "weight_value", source = "value")
+    @Mapping(target = "weight_unit", source = "unit")
     WeightEmbeddable map(Weight weight);
 
     @Mapping(target = "value", source = "weight_value")

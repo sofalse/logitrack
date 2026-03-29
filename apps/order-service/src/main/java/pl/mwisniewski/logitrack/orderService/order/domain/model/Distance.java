@@ -8,6 +8,10 @@ public record Distance(BigDecimal value, Unit unit) {
             throw new IllegalArgumentException("Distance cannot be negative");
         }
     }
+
+    public Distance(double value, String unit) {
+        this(BigDecimal.valueOf(value), Unit.valueOf(unit));
+    }
     public enum Unit { KM, MI }
 
 }

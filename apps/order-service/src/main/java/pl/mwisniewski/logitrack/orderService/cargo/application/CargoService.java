@@ -7,8 +7,10 @@ import pl.mwisniewski.logitrack.orderService.cargo.application.dto.CreateCargoCo
 import pl.mwisniewski.logitrack.orderService.cargo.domain.model.Cargo;
 import pl.mwisniewski.logitrack.orderService.cargo.domain.model.CargoStatus;
 import pl.mwisniewski.logitrack.orderService.cargo.domain.ports.CargoRepository;
+import pl.mwisniewski.logitrack.orderService.common.PageResult;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,11 +20,10 @@ public class CargoService {
 
     @Transactional
     public Cargo createCargo(CreateCargoCommand command) {
-        UUID id = UUID.randomUUID();
 
         Cargo newCargo = new Cargo(
-                id,
-                null,
+                UUID.randomUUID(),
+                command.orderId(),
                 command.description(),
                 CargoStatus.PENDING,
                 command.dimensions(),
@@ -42,8 +43,13 @@ public class CargoService {
     }
 
     @Transactional
-    public Cargo getCargo(UUID id) {
-        return cargoRepository.findById(id).orElse(null);
+    public PageResult<Cargo> findAllCargos(int page, int size) {
+        return cargoRepository.findAll(page, size);
+    }
+
+    @Transactional
+    public Optional<Cargo> getCargo(UUID id) {
+        return cargoRepository.findById(id);
     }
 
     @Transactional

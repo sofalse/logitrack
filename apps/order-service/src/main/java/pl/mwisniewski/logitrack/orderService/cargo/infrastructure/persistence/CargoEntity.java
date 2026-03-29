@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.domain.Persistable;
 import pl.mwisniewski.logitrack.orderService.cargo.domain.model.CargoStatus;
 import pl.mwisniewski.logitrack.orderService.order.infrastructure.persistence.DistanceEmbeddable;
 
@@ -17,13 +18,26 @@ import java.util.UUID;
 @Table(name = "cargo")
 @Getter
 @Setter
-public class CargoEntity {
+public class CargoEntity implements Persistable<UUID> {
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        this.isNew = false;
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Nullable
+    @NotNull
     @Column(name = "order_id")
     private UUID orderId;
 

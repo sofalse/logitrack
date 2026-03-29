@@ -18,24 +18,12 @@ public class CargoWebMapper {
                 cargo.getWeight().value(),
                 cargo.getWeight().unit().toString(),
                 cargo.getStatus().name(),
-                Instant.now(),
-                Instant.now()
+                cargo.getCreatedAt(),
+                cargo.getUpdatedAt()
         );
     }
 
     public static List<CargoResponse> toFindAllResponse(List<Cargo> cargos) {
-        return cargos.stream().map(cargo -> new CargoResponse(
-                cargo.getId(),
-                cargo.getOrderId(),
-                cargo.getDescription(),
-                cargo.getDimensions().width(),
-                cargo.getDimensions().length(),
-                cargo.getDimensions().height(),
-                cargo.getWeight().value(),
-                cargo.getWeight().unit().toString(),
-                cargo.getStatus().name(),
-                Instant.now(),
-                Instant.now()
-        )).toList();
+        return cargos.stream().map(CargoWebMapper::toResponse).toList();
     }
 }

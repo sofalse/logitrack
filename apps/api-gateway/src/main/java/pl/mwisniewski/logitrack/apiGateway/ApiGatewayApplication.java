@@ -11,8 +11,14 @@ public class ApiGatewayApplication {
 
 	@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-		return builder.routes().route("orders-routes", r -> r.path("/orders", "/orders/**").filters(f -> f.rewritePath("/orders/?(?<segment>.*)", "/${segment}")).uri("http://localhost:8081")).build();
-//		return route("orders-route").route(path("/orders/**", "/orders"), http()).before(uri("http://localhost:8081")).build();
+		return builder.routes()
+				.route("orders-routes", r -> r
+						.path("/orders", "/orders/**")
+						.uri("http://localhost:8081"))
+				.route("cargos-routes", r -> r
+						.path("/cargos", "/cargos/**")
+						.uri("http://localhost:8081"))
+				.build();
 	}
 
 	public static void main(String[] args) {

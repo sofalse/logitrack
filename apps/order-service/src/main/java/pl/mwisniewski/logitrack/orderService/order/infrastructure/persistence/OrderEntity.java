@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.domain.Persistable;
 import pl.mwisniewski.logitrack.orderService.order.domain.model.OrderStatus;
 
 import java.time.Instant;
@@ -16,10 +17,23 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "orders")
-public class OrderEntity {
+public class OrderEntity implements Persistable<UUID> {
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        this.isNew = false;
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     @Column(name = "expected_delivery_date")
@@ -42,6 +56,9 @@ public class OrderEntity {
     @Embedded
     private PriceEmbeddable price;
 
+    @NotNull
+    private String issuer;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
@@ -49,4 +66,5 @@ public class OrderEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
+
 }

@@ -1,0 +1,5 @@
+ALTER TABLE orders
+    ADD issuer VARCHAR(255);
+
+ALTER TABLE orders
+    ALTER COLUMN issuer SET NOT NULL;

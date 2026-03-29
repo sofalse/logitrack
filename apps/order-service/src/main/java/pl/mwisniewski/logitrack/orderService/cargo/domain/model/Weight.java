@@ -9,5 +9,9 @@ public record Weight(BigDecimal value, Unit unit) {
         }
     }
 
+    public Weight(int value, String unit) {
+        this(new BigDecimal(value), Unit.valueOf(unit));
+    }
+
     public enum Unit {KG, TON, LBS}
 }
